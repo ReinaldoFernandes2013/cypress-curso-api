@@ -119,5 +119,181 @@ Os testes utilizam o comando cy.api para realizar requisições às APIs.
 O primeiro teste gera um email randômico a cada execução, evitando conflitos de dados.
 Os logs das requisições e respostas são impressos no console do Cypress.
 
+REDME.MD
+Teste de falha de autenticação (401) - Typeform API
+
+Este arquivo descreve um teste automatizado utilizando Cypress para verificar se a API do Typeform retorna um erro 401 (Não Autorizado) quando uma requisição é feita sem credenciais de autenticação.
+
+Pré-requisitos
+Cypress instalado
+Conhecimento básico de Cypress e escrita de testes automatizados
+Configuração
+Certifique-se de ter configurado o Cypress em seu projeto.
+Instale as dependências necessárias (cypress install).
+Executando o teste
+Abra o terminal no diretório do projeto.
+Execute o comando cypress run para rodar todos os testes.
+O resultado do teste será exibido no terminal, indicando se a API retornou o erro 401 esperado.
+O que o teste verifica
+Este teste faz uma requisição GET para a URL https://api.typeform.com/me sem incluir credenciais de autenticação no cabeçalho da requisição.
+
+failOnStatusCode: false: Desabilita o comportamento padrão do Cypress de falhar o teste em caso de status code diferente de 200.
+Validação do status code: O teste verifica se o status code da resposta é igual a 401.
+Validação do corpo da resposta (duas opções):
+O teste verifica se o corpo da resposta contém a string AUTHENTICATION_FAILED.
+(Alternativo) O teste parseia o corpo da resposta como JSON e verifica se o objeto possui as propriedades code e description com os valores 'AUTHENTICATION_FAILED' e 'Authentication credentials not found on the Request Headers', respectivamente.
+Observação
+Este teste é um exemplo básico de como verificar um erro de autenticação na API do Typeform. Você pode adaptá-lo para outras APIs e cenários de teste.
+
+Importante: Não inclua credenciais reais de autenticação neste arquivo ou no código de teste. Utilize variáveis de ambiente ou outro mecanismo seguro para armazenar credenciais sensíveis.
+
+
+REDME.MD
+Teste de verificação de propriedade em lista de usuários (API ReqRes)
+
+Este arquivo descreve um teste automatizado utilizando Cypress para verificar se todos os usuários em uma lista obtida da API ReqRes possuem a propriedade first_name.
+
+O que o teste verifica
+Carregar lista de usuários: O teste utiliza o comando cy.api para realizar uma requisição GET para a URL https://reqres.in/api/users?page=2, que retorna uma lista de usuários paginada (página 2). O alias 'users' é atribuído à requisição para facilitar o acesso à resposta.
+Iterar pela lista: O teste utiliza o comando cy.get('@users') para acessar a resposta armazenada com o alias e, em seguida, utiliza o comando its('body') para extrair o corpo da resposta (onde a lista de usuários está localizada).
+Verificação da propriedade: O teste utiliza o método forEach para iterar sobre cada elemento da lista de usuários obtida do corpo da resposta. Dentro do loop, utiliza o comando expect(element).has.property('first_name') para verificar se cada elemento possui a propriedade first_name.
+Observação
+Este teste verifica a existência da propriedade first_name, mas não valida o valor. Você pode adaptar o teste para verificar valores específicos ou outras propriedades de acordo com a sua necessidade.
+
+Importante: Este exemplo utiliza a página 2 da API ReqRes para fins demonstrativos. Você pode alterar a página desejada modificando o parâmetro page na URL da requisição.
+
+REDME.MD
+Teste de criação e deleção de usuário com fixture (API Gorest)
+
+Este arquivo descreve um teste automatizado utilizando Cypress para criar um usuário na API Gorest e posteriormente realizar sua deleção. O teste utiliza um fixture para armazenar dados básicos do usuário e gera aleatoriamente um email para evitar conflitos.
+
+Executando o teste
+Abra o terminal no diretório do projeto.
+Execute o comando cypress run para rodar todos os testes.
+O resultado do teste será exibido no terminal, indicando se o usuário foi criado e deletado com sucesso.
+O que o teste verifica
+Geração de email aleatório: O teste gera um email aleatório concatenando uma string base com caracteres aleatórios e finalizando com um domínio fixo.
+Carregar dados do fixture: O teste utiliza o comando cy.fixture para carregar os dados básicos do usuário armazenados no arquivo createuser.json.
+Criação de usuário:
+O teste monta o payload da requisição POST utilizando os dados do fixture e o email gerado aleatoriamente.
+O teste utiliza o comando cy.api para realizar uma requisição POST para a URL https://gorest.co.in/public/v2/users incluindo o token de acesso no header.
+Validação da criação:
+O teste verifica se o status code da resposta é 201 (Created).
+O teste verifica se o corpo da resposta possui a propriedade email com o valor do email gerado.
+Extração do ID do usuário: O teste extrai o ID do usuário recém-criado a partir do corpo da resposta.
+Deleção do usuário:
+O teste utiliza o comando cy.request para realizar uma requisição DELETE para a URL https://gorest.co.in/public/v2/users/ concatenada com o ID do usuário extraído anteriormente.
+O teste utiliza o token de acesso no header da requisição DELETE.
+Validação da deleção: O teste verifica se o status code da resposta da deleção é 204 (No Content).
+Observação
+Este teste utiliza um fixture para manter os dados básicos do usuário reutilizáveis. O email é gerado aleatoriamente para evitar conflitos em ambientes de teste.
+
+Automatização de API com Comandos Customizados no Cypress
+
+Este arquivo descreve dois testes automatizados utilizando Cypress para interagir com APIs:
+
+1. Teste utilizando Comando Customizado (cy.getAPI)
+
+Este teste demonstra o uso de um comando customizado (cy.getAPI) para realizar uma requisição GET.
+O comando customizado não está incluído neste exemplo, mas deve ser implementado separadamente para encapsular a lógica de requisição e tratamento de resposta.
+2. Teste interagindo com documentação da API Cypress
+
+Este teste utiliza o contexto Cypress.arch para focar em testes relacionados à arquitetura do Cypress.
+O teste (ainda em desenvolvimento) visa demonstrar como obter e configurar opções de configuração do Cypress.
+
+Executando os testes
+Abra o terminal no diretório do projeto.
+Execute o comando cypress run para rodar todos os testes.
+O resultado dos testes será exibido no terminal, indicando se as requisições e validações foram bem-sucedidas.
+O que os testes verificam
+1. Teste utilizando Comando Customizado (cy.getAPI):
+
+O teste utiliza o comando customizado cy.getAPI para realizar uma requisição GET para a URL https://gorest.co.in/public-api/users.
+O teste verifica se o status code da resposta é 200 (OK).
+O teste verifica se o corpo da resposta possui a propriedade meta.pagination.limit com o valor 10, indicando o limite de itens por página.
+2. Teste interagindo com documentação da API Cypress (em desenvolvimento):
+
+O teste utiliza o contexto Cypress.arch para focar em testes de arquitetura do Cypress.
+O teste (ainda não implementado) visa demonstrar como obter e configurar opções de configuração do Cypress.
+Observação
+O primeiro teste depende da implementação do comando customizado cy.getAPI.
+O segundo teste está em desenvolvimento e precisa ser complementado para verificar a obtenção e configuração de opções do Cypress.
+Importante:
+
+A URL https://gorest.co.in/public-api/users é usada como exemplo. Adapte o teste para a API que deseja testar.
+Substitua a documentação da API Cypress (https://example.cypress.io/cypress-api) pela documentação real que você deseja utilizar.
+
+Teste de consulta de CEP via API dos Correios
+
+Este arquivo descreve um teste automatizado utilizando Cypress para consultar informações de um CEP específico na API dos Correios.
+
+Observação:
+
+É possível encontrar documentação e exemplos de uso da API dos Correios em https://viacep.com.br/.
+A habilitação de conta nos Correios pode ser necessária para consulta de CEPs reais. Utilize CEPs de exemplo como 01001000 para testes iniciais sem a necessidade de conta.
+Executando o teste
+Abra o terminal no diretório do projeto.
+Execute o comando cypress run para rodar todos os testes.
+O resultado do teste será exibido no terminal, indicando se a consulta foi bem-sucedida e os dados do CEP correspondem ao esperado.
+O que o teste verifica
+O teste utiliza o comando customizado cy.getCep01001000 (provavelmente implementado em outro arquivo).
+Importante: Certifique-se de implementar o comando cy.getCep01001000 para realizar a requisição GET para a API dos Correios utilizando a variável de ambiente API_CEP e o CEP específico (no caso, 01001000).
+O teste verifica se o status code da resposta é 200 (OK).
+O teste verifica se o corpo da resposta possui as seguintes propriedades e valores esperados:
+cep: igual a '01001-000'
+logradouro: igual a 'Praça da Sé'
+complemento: igual a 'lado ímpar'
+bairro: igual a 'Sé'
+localidade: igual a 'São Paulo'
+uf: igual a 'SP'
+ibge: igual a '3550308'
+gia: igual a '1004'
+ddd: igual a '11'
+siafi: igual a '7107'
+Observação
+O teste utiliza o CEP 01001000 como exemplo. Você pode adaptar o comando cy.getCep para receber um CEP como parâmetro e realizar testes dinâmicos.
+A consulta de CEPs reais pode exigir autenticação na API dos Correios. Verifique a documentação da API para obter mais informações.
+
+Explorando Objetos e Métodos do Cypress
+
+Este arquivo descreve testes automatizados utilizando Cypress para explorar diversos objetos e métodos disponibilizados pela biblioteca.
+
+Executando os testes
+Abra o terminal no diretório do projeto.
+Execute o comando cypress run para rodar todos os testes.
+O resultado dos testes será exibido no terminal, indicando se as interações com os objetos e métodos do Cypress foram bem-sucedidas.
+Objetos e Métodos Explorados
+Esse arquivo de teste cobre diversos objetos e métodos do Cypress, agrupados por contexto para melhor organização.
+
+Cypress.Commands
+.add() - permite criar comandos customizados para reuso em seus testes.
+Cypress.Cookies
+.debug() - habilita ou desabilita o modo debug para registro de cookies no console.
+.preserveOnce() - preserva cookies específicos para que não sejam resetados entre os testes.
+.defaults() - define configurações padrão para cookies, como preservação automática.
+Cypress.arch
+Permite obter o nome da arquitetura da CPU do sistema operacional em que os testes estão sendo executados.
+Cypress.config
+Permite obter e configurar opções globais do Cypress, como timeout de carregamento de página e resolução da viewport.
+Cypress.dom
+.isHidden() - verifica se um elemento DOM está oculto com base no estilo CSS.
+Cypress.env
+Permite definir e obter variáveis de ambiente para cenários de teste dinâmicos.
+Cypress.log
+Fornece métodos para controlar o que é impresso no log de comandos durante a execução dos testes.
+Cypress.platform
+Permite obter o nome do sistema operacional subjacente (ex: 'win32', 'darwin', etc.).
+Cypress.version
+Permite obter a versão do Cypress atualmente em execução.
+Cypress.spec
+Permite obter informações sobre o arquivo de especificação de teste atual (ex: nome, caminho relativo e absoluto).
+Observação
+Este arquivo serve como um exemplo para explorar funcionalidades do Cypress. Os testes individuais não possuem validações específicas, pois o foco está na demonstração dos objetos e métodos. Você pode adaptar os conceitos para criar testes funcionais de acordo com sua necessidade.
+
+Importante:
+
+A URL https://example.cypress.io/cypress-api é usada como exemplo para ilustrar as visitas em cada teste. Substitua essa URL pela URL da sua aplicação sob teste.
+Os métodos explorados possuem documentação oficial do Cypress. Consulte a documentação (https://docs.cypress.io/guides/overview/why-cypress) para aprofundar o conhecimento sobre cada objeto e método.
+
 Contribuições
 Sinta-se à vontade para sugerir melhorias, correções ou diferentes casos de teste para este código.
